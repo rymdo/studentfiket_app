@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Studentfiket</string>
+    <string name="footer_text">App by Niklas Wigertz @ Lifee.com</string>
+    <string name="day1_text">Monday</string>
+    <string name="day2_text">Tuesday</string>
+    <string name="day3_text">Wednesday</string>
+    <string name="day4_text">Thursday</string>
+    <string name="day5_text">Friday</string>
+</resources>
