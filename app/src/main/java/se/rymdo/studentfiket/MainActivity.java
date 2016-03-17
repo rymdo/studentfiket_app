@@ -22,8 +22,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Comparator;
-
+/*
 public abstract class DateStringComparator implements Comparator {
 
     @Override
@@ -44,7 +43,7 @@ public abstract class DateStringComparator implements Comparator {
     }
 
 }
-
+*/
 
 public class MainActivity extends AppCompatActivity  implements GestureDetector.OnGestureListener {
 
@@ -162,7 +161,7 @@ public class MainActivity extends AppCompatActivity  implements GestureDetector.
         }
         return data_buffer;
     }
-
+/*
     public List<String> get_sorted_date_keys(JSONObject jsonobj) {
         List<String> dates_list = new ArrayList();
         for (Iterator<String> dates_iter =  jsonobj.keys(); dates_iter.hasNext(); ) {
@@ -173,28 +172,76 @@ public class MainActivity extends AppCompatActivity  implements GestureDetector.
 
         return dates_list;
     }
+*/
+    public StudentfiketDay parseJSONShiftsToStudentfiketDay(JSONArray shifts) throws JSONException, ParseException {
+        StudentfiketDay newDay = new StudentfiketDay();
 
-    public List<JSONObject> parse_serialized_data_to_sorted_jsonobject_list(String data) {
-        List<JSONObject> new_list = new ArrayList();
+        for(int i = 0; i < shifts.length(); i++) {
+            JSONObject shift = shifts.getJSONObject(i);
 
+            StudentfiketShift newShift = new StudentfiketShift();
 
-        JSONObject jsonObj = new JSONObject(data);
+            //ToDo: Add parse users
+            //ToDo: Add parse org
 
-        for (Iterator<String> dates_iter =  jsonObj.keys(); dates_iter.hasNext(); ) {
-            String date = dates_iter.next();
+            newShift.setsID(shift.getInt("sID"));
+            String startTimeStr = shift.getString("startTime");
+            String endTimeStr = shift.getString("endTime");
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date startTime = format.parse(startTimeStr);
+            Date endTime = format.parse(endTimeStr);
+            newShift.setStartTime(startTime);
+            newShift.setEndTime(endTime);
+            newShift.setColor(shift.getInt("color"));
+            newShift.setClose(shift.getBoolean("close"));
 
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            Date parsed_date = format.parse(date);
-
-            if(new_list.size() < 1) {
-                new_list.add();
-            }
-
-            //JSONArray shifts = jsonObj.getJSONArray(date);
-
+            newDay.addShift(newShift);
         }
 
-        return new_list;
+
+        return newDay;
+
+    }
+
+    public StudentfiketWeek parse_serialized_data_to_studentfiket_week(String data) {
+        StudentfiketWeek new_week = new StudentfiketWeek();
+        new_week.setWeekNumber(11);
+        try {
+            JSONObject jsonObj = new JSONObject(data);
+
+            for (Iterator<String> dates_iter =  jsonObj.keys(); dates_iter.hasNext(); ) {
+                String date = dates_iter.next();
+
+                JSONArray shifts = jsonObj.getJSONArray(date);
+                StudentfiketDay new_day = parseJSONShiftsToStudentfiketDay(shifts);
+
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                Date parsed_date = format.parse(date);
+                new_day.setDate(parsed_date);
+
+                new_week.addDay(new_day);
+
+
+                /*
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                Date parsed_date = format.parse(date);
+
+                if(new_list.size() < 1) {
+                    new_list.add();
+                }
+            */
+                //JSONArray shifts = jsonObj.getJSONArray(date);
+
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return new_week;
     }
 
     public void get_new_data_from_site() {
@@ -205,7 +252,13 @@ public class MainActivity extends AppCompatActivity  implements GestureDetector.
             return;
         }
 
-        List<JSONObject> date_objects = parse_serialized_data_to_sorted_jsonobject_list(serialized_data);
+        StudentfiketWeek week = parse_serialized_data_to_studentfiket_week(serialized_data);
+
+
+        week.getNumberOfDays();
+
+        /*
+        List<JSONObject> date_objects = parse_serialized_data_to_studentfiket_week(serialized_data);
 
         try {
             JSONObject jsonObj = new JSONObject(serialized_data);
@@ -267,6 +320,7 @@ public class MainActivity extends AppCompatActivity  implements GestureDetector.
             e.printStackTrace();
         }
 
+
         //Update stuff
         runOnUiThread(new Runnable() {
             @Override
@@ -280,7 +334,7 @@ public class MainActivity extends AppCompatActivity  implements GestureDetector.
             }
         });
 
-
+        */
 
 
     }
