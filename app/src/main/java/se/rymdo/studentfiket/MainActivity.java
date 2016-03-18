@@ -18,6 +18,7 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
@@ -58,12 +59,16 @@ public class MainActivity extends AppCompatActivity  implements GestureDetector.
     public TextView text_day5_status;
 
 
-    public String name1 = "1";
-    public String name2 = "2";
-    public String name3 = "3";
-    public String name4 = "4";
-    public String name5 = "5";
+    public String day1_text = "Closed";
+    public String day2_text = "Closed";
+    public String day3_text = "Closed";
+    public String day4_text = "Closed";
+    public String day5_text = "Closed";
+    public String day6_text = "Closed";
+    public String day7_text = "Closed";
     public List<String> all_names_list;
+
+    public StudentfiketWeek thisWeek = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,6 +211,16 @@ public class MainActivity extends AppCompatActivity  implements GestureDetector.
     public StudentfiketWeek parse_serialized_data_to_studentfiket_week(String data) {
         StudentfiketWeek new_week = new StudentfiketWeek();
         new_week.setWeekNumber(11);
+
+        Calendar cal = Calendar.getInstance();
+        cal.getTime()
+
+
+        for(int i = 0; i < 7; i++) {
+            StudentfiketDay new_day = new StudentfiketDay();
+            new_week.addDay(new_day);
+        }
+
         try {
             JSONObject jsonObj = new JSONObject(data);
 
@@ -213,13 +228,20 @@ public class MainActivity extends AppCompatActivity  implements GestureDetector.
                 String date = dates_iter.next();
 
                 JSONArray shifts = jsonObj.getJSONArray(date);
-                StudentfiketDay new_day = parseJSONShiftsToStudentfiketDay(shifts);
+                try {
+                    StudentfiketDay new_day = parseJSONShiftsToStudentfiketDay(shifts);
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                    Date parsed_date = format.parse(date);
+                    new_day.setDate(parsed_date);
 
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                Date parsed_date = format.parse(date);
-                new_day.setDate(parsed_date);
+                    //ToDo: find where to place the new date in the week.days list
+                    //new_week.set(LOC, new_day);
 
-                new_week.addDay(new_day);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+
 
 
                 /*
@@ -254,8 +276,19 @@ public class MainActivity extends AppCompatActivity  implements GestureDetector.
 
         StudentfiketWeek week = parse_serialized_data_to_studentfiket_week(serialized_data);
 
+        this.thisWeek = week;
 
-        week.getNumberOfDays();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                text_day1_status.setText(all_names_list.get(0));
+                text_day2_status.setText(all_names_list.get(1));
+                text_day3_status.setText(all_names_list.get(2));
+                text_day4_status.setText(all_names_list.get(3));
+                text_day5_status.setText(all_names_list.get(4));
+                all_names_list.clear();
+            }
+        });
 
         /*
         List<JSONObject> date_objects = parse_serialized_data_to_studentfiket_week(serialized_data);

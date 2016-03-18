@@ -40,7 +40,7 @@ public class StudentfiketShift extends Object {
     }
 
     public Date getEndTime() {
-        return endTime;
+        return this.endTime;
     }
 
     public void setEndTime(Date endTime) {
