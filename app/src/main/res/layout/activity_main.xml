@@ -228,6 +228,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/starStarText"
+            android:id="@+id/textView2"
+            android:layout_gravity="center_horizontal"
+            android:linksClickable="true"
+            android:autoLink="web"
+            android:autoText="false"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="@string/footer_text"
             android:id="@+id/footerText"
             android:layout_gravity="center_horizontal"
