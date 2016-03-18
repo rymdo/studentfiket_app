@@ -210,11 +210,8 @@ public class MainActivity extends AppCompatActivity  implements GestureDetector.
 
     public StudentfiketWeek parse_serialized_data_to_studentfiket_week(String data) {
         StudentfiketWeek new_week = new StudentfiketWeek();
-        new_week.setWeekNumber(11);
-
-        Calendar cal = Calendar.getInstance();
-        cal.getTime()
-
+        new_week.setWeekNumber(-1);
+        int weekNumber = -1;
 
         for(int i = 0; i < 7; i++) {
             StudentfiketDay new_day = new StudentfiketDay();
@@ -230,19 +227,30 @@ public class MainActivity extends AppCompatActivity  implements GestureDetector.
                 JSONArray shifts = jsonObj.getJSONArray(date);
                 try {
                     StudentfiketDay new_day = parseJSONShiftsToStudentfiketDay(shifts);
+
                     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
                     Date parsed_date = format.parse(date);
                     new_day.setDate(parsed_date);
 
-                    //ToDo: find where to place the new date in the week.days list
-                    //new_week.set(LOC, new_day);
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(parsed_date);
+                    cal.setFirstDayOfWeek(Calendar.MONDAY);
+
+                    int firstDayOfWeek = cal.getFirstDayOfWeek();
+                    int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+                    int position = dayOfWeek-firstDayOfWeek;
+
+                    if(position >= 0) {
+                        new_week.getDays().set(position, new_day);
+                    }
+
+                    if(weekNumber < 0) {
+                        weekNumber = cal.get(Calendar.WEEK_OF_YEAR);
+                    }
 
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-
-
-
 
                 /*
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -259,9 +267,14 @@ public class MainActivity extends AppCompatActivity  implements GestureDetector.
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
-        } catch (ParseException e) {
-            e.printStackTrace();
         }
+
+        //ToDo: Fix locale week quick fix!
+        if(weekNumber > 0) {
+            weekNumber--;
+        }
+
+        new_week.setWeekNumber(weekNumber);
 
         return new_week;
     }

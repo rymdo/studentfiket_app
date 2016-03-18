@@ -6,10 +6,12 @@ import java.util.List;
 public class StudentfiketWeek extends Object {
     private int weekNumber;
     private List<StudentfiketDay> days;
+    private boolean showWeekend;
 
     public StudentfiketWeek() {
         this.days = new ArrayList();
         this.weekNumber = 0;
+        this.showWeekend = false;
     }
 
     public List<StudentfiketDay> getDays() {
@@ -30,5 +32,13 @@ public class StudentfiketWeek extends Object {
 
     public int getNumberOfDays() {
         return days.size();
+    }
+
+    public boolean isShowWeekend() {
+        return showWeekend;
+    }
+
+    public void setShowWeekend(boolean showWeekend) {
+        this.showWeekend = showWeekend;
     }
 }
