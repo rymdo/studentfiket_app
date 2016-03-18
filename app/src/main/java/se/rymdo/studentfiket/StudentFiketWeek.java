@@ -1,6 +1,9 @@
 package se.rymdo.studentfiket;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 public class StudentfiketWeek extends Object {
@@ -40,5 +43,50 @@ public class StudentfiketWeek extends Object {
 
     public void setShowWeekend(boolean showWeekend) {
         this.showWeekend = showWeekend;
+    }
+
+    public String getWeekStartDateString() {
+        String startDayString = "Unknown";
+
+        try {
+            Date startDayDate = this.getDays().get(0).getDate();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            startDayString = dateFormat.format(startDayDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return startDayString;
+    }
+
+    public String getWeekEndDateString() {
+        String endDayString = "Unknown";
+
+        try {
+            Date lastValidDay = null;
+
+            for (Iterator<StudentfiketDay> dates_iter =  this.days.iterator(); dates_iter.hasNext(); ) {
+                StudentfiketDay date = dates_iter.next();
+
+                if(lastValidDay == null) {
+                    lastValidDay = date.getDate();
+                } else {
+                    if(lastValidDay != null && date.getDate() != null) {
+                        if(date.getDate().after(lastValidDay)) {
+                            lastValidDay = date.getDate();
+                        }
+                    }
+                }
+
+            }
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            endDayString = dateFormat.format(lastValidDay);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return endDayString;
     }
 }

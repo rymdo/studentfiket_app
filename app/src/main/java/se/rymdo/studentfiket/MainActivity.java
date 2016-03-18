@@ -181,6 +181,8 @@ public class MainActivity extends AppCompatActivity  implements GestureDetector.
     public StudentfiketDay parseJSONShiftsToStudentfiketDay(JSONArray shifts) throws JSONException, ParseException {
         StudentfiketDay newDay = new StudentfiketDay();
 
+        Date newDayDate = null;
+
         for(int i = 0; i < shifts.length(); i++) {
             JSONObject shift = shifts.getJSONObject(i);
 
@@ -200,9 +202,14 @@ public class MainActivity extends AppCompatActivity  implements GestureDetector.
             newShift.setColor(shift.getInt("color"));
             newShift.setClose(shift.getBoolean("close"));
 
+            if(newDayDate == null) {
+                newDayDate = startTime;
+            }
+
             newDay.addShift(newShift);
         }
 
+        newDay.setDate(newDayDate);
 
         return newDay;
 
@@ -294,12 +301,18 @@ public class MainActivity extends AppCompatActivity  implements GestureDetector.
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                text_day1_status.setText(all_names_list.get(0));
-                text_day2_status.setText(all_names_list.get(1));
-                text_day3_status.setText(all_names_list.get(2));
-                text_day4_status.setText(all_names_list.get(3));
-                text_day5_status.setText(all_names_list.get(4));
-                all_names_list.clear();
+                String weekDateText = thisWeek.getWeekStartDateString();
+                weekDateText += " - ";
+                weekDateText += thisWeek.getWeekEndDateString();
+                weekDateText += " (Week ";
+                weekDateText += Integer.toString(thisWeek.getWeekNumber());
+                weekDateText += ")";
+                text_week_date.setText(weekDateText);
+                text_day1_status.setText(thisWeek.getDays().get(0).getDayOpenString());
+                text_day2_status.setText(thisWeek.getDays().get(1).getDayOpenString());
+                text_day3_status.setText(thisWeek.getDays().get(2).getDayOpenString());
+                text_day4_status.setText(thisWeek.getDays().get(3).getDayOpenString());
+                text_day5_status.setText(thisWeek.getDays().get(4).getDayOpenString());
             }
         });
 

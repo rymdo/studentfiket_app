@@ -70,7 +70,7 @@ public class StudentfiketDay extends Object {
         return null;
     }
 
-    public boolean closedInBetweenFirstAndLastShist() {
+    public boolean closedInBetweenFirstAndLastShift() {
 
         StudentfiketShift last_shift = null;
         boolean isClosedInBetween = false;
@@ -91,7 +91,7 @@ public class StudentfiketDay extends Object {
         return isClosedInBetween;
     }
 
-    private String getDayOpenString() {
+    public String getDayOpenString() {
 
         String str = "Closed";
 
@@ -102,9 +102,9 @@ public class StudentfiketDay extends Object {
         SimpleDateFormat hourMinuteFormat = new SimpleDateFormat("HH:mm");
         String startTime = hourMinuteFormat.format(this.getStartOfDay());
         String endTime = hourMinuteFormat.format(this.getEndOfDay());
-        str = startTime + " " + endTime;
+        str = startTime + " - " + endTime;
 
-        if(this.closedInBetweenFirstAndLastShist()) {
+        if(this.closedInBetweenFirstAndLastShift()) {
             str += " **";
         }
 

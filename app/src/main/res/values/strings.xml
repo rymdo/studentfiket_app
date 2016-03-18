@@ -6,4 +6,5 @@
     <string name="day3_text">Wednesday</string>
     <string name="day4_text">Thursday</string>
     <string name="day5_text">Friday</string>
+    <string name="instructionText">Press and hold the screen to refresh the schedule</string>
 </resources>
