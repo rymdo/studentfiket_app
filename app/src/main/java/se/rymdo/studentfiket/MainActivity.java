@@ -23,28 +23,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-/*
-public abstract class DateStringComparator implements Comparator {
-
-    @Override
-    public int compare(String date1, String date2) {
-
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        Date date1_d = null;
-        Date date2_d = null;
-        try {
-            date1_d = format.parse(date1);
-            date2_d = format.parse(date2);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        // descending order (ascending order would be:
-        // o1.getGrade()-o2.getGrade())
-        return o2.getGrade() - o1.getGrade();
-    }
-
-}
-*/
 
 public class MainActivity extends AppCompatActivity  implements GestureDetector.OnGestureListener {
 
@@ -85,6 +63,14 @@ public class MainActivity extends AppCompatActivity  implements GestureDetector.
         text_day5_status = (TextView)findViewById(R.id.day5Status);
 
         this.gestureDetector = new GestureDetectorCompat(this, this);
+
+        set_all_loading();
+        new Thread (new Runnable(){
+            @Override
+            public void run(){
+                get_new_data_from_site();
+            }
+        }).start();
 
     }
 
@@ -166,18 +152,7 @@ public class MainActivity extends AppCompatActivity  implements GestureDetector.
         }
         return data_buffer;
     }
-/*
-    public List<String> get_sorted_date_keys(JSONObject jsonobj) {
-        List<String> dates_list = new ArrayList();
-        for (Iterator<String> dates_iter =  jsonobj.keys(); dates_iter.hasNext(); ) {
-            dates_list.add(dates_iter.next());
-        }
 
-        Collections.sort(dates_list, comparator);
-
-        return dates_list;
-    }
-*/
     public StudentfiketDay parseJSONShiftsToStudentfiketDay(JSONArray shifts) throws JSONException, ParseException {
         StudentfiketDay newDay = new StudentfiketDay();
 
@@ -258,17 +233,6 @@ public class MainActivity extends AppCompatActivity  implements GestureDetector.
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-
-                /*
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                Date parsed_date = format.parse(date);
-
-                if(new_list.size() < 1) {
-                    new_list.add();
-                }
-            */
-                //JSONArray shifts = jsonObj.getJSONArray(date);
-
             }
 
         } catch (JSONException e) {
@@ -315,87 +279,6 @@ public class MainActivity extends AppCompatActivity  implements GestureDetector.
                 text_day5_status.setText(thisWeek.getDays().get(4).getDayOpenString());
             }
         });
-
-        /*
-        List<JSONObject> date_objects = parse_serialized_data_to_studentfiket_week(serialized_data);
-
-        try {
-            JSONObject jsonObj = new JSONObject(serialized_data);
-
-            for (Iterator<String> dates_iter =  jsonObj.keys(); dates_iter.hasNext(); ) {
-
-                String date = dates_iter.next();
-
-                JSONArray shifts = jsonObj.getJSONArray(date);
-
-                Boolean first_start_time_set = false;
-                Boolean last_end_time_set = false;
-                Date first_start_time = new Date();
-                Date last_end_time = new Date();
-
-                for(int i = 0; i < shifts.length(); i++) {
-                    JSONObject shift = shifts.getJSONObject(i);
-
-                    Boolean is_open = !(shift.getBoolean("close"));
-                    String start_time = shift.getString("startTime");
-                    String end_time = shift.getString("endTime");
-
-                    //2016-03-14 08:00:00
-                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    Date current_start_time = format.parse(start_time);
-                    Date current_end_time = format.parse(end_time);
-
-                    if(is_open) {
-                        if(!first_start_time_set) {
-                            first_start_time = current_start_time;
-                            first_start_time_set = true;
-                        }
-
-                        if(!last_end_time_set) {
-                            last_end_time = current_end_time;
-                            last_end_time_set = true;
-                        } else {
-                            if(current_end_time.after(last_end_time)) {
-                                last_end_time = current_end_time;
-                            }
-                        }
-                    }
-
-                }
-
-                String new_text = "Closed";
-                if(first_start_time_set && last_end_time_set) {
-                    SimpleDateFormat dateFormatYouWant = new SimpleDateFormat("HH:mm");
-                    String s_time = dateFormatYouWant.format(first_start_time);
-                    String e_time = dateFormatYouWant.format(last_end_time);
-                    new_text = s_time + " - " + e_time;
-                }
-                all_names_list.add(new_text);
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-
-        //Update stuff
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                text_day1_status.setText(all_names_list.get(0));
-                text_day2_status.setText(all_names_list.get(1));
-                text_day3_status.setText(all_names_list.get(2));
-                text_day4_status.setText(all_names_list.get(3));
-                text_day5_status.setText(all_names_list.get(4));
-                all_names_list.clear();
-            }
-        });
-
-        */
-
-
     }
 
     public void set_all_loading() {
